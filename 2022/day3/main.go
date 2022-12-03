@@ -25,18 +25,15 @@ func main() {
 
 	//Pre Work
 	input := ReadInput(os.Args[1])
-
-	//Split
-	c0, c1, c2 := make(chan string, 1024), make(chan string, 1024), make(chan string, 1024)
-	Split(input, c0, c1, c2)
+	channels := SplitWithBuffer(input, 3, 1024)
 
 	//Count
-	rucksackCount := Count(c0)
+	rucksackCount := Count(channels[0])
 
 	//Challange 1
 	var challange1 <-chan int
 	{
-		rucksacks := SplitRucksackByCompartment(c1)
+		rucksacks := SplitRucksackByCompartment(channels[1])
 		duplicates := FindCommonItems(rucksacks)
 		priorities := ConvertToPriority(duplicates)
 		challange1 = Sum(priorities)
@@ -45,7 +42,7 @@ func main() {
 	//Challange 2
 	var challange2 <-chan int
 	{
-		groups := Group(c2, 3)
+		groups := Group(channels[2], 3)
 		groupItems := FindGroupItem(groups)
 		priorities := ConvertToPriority(groupItems)
 		challange2 = Sum(priorities)
@@ -219,7 +216,17 @@ func Sum(values <-chan int) <-chan int {
 	return output
 }
 
-func Split[T any](input <-chan T, outputs ...chan<- T) {
+func Split[T any](input <-chan T, count int) []chan T {
+	return SplitWithBuffer(input, count, 1)
+}
+
+func SplitWithBuffer[T any](input <-chan T, count int, buffer int) []chan T {
+	outputs := []chan T{}
+
+	for i := 0; i < count; i++ {
+		outputs = append(outputs, make(chan T, buffer))
+	}
+
 	go func() {
 		for item := range input {
 			for _, output := range outputs {
@@ -231,6 +238,8 @@ func Split[T any](input <-chan T, outputs ...chan<- T) {
 			close(output)
 		}
 	}()
+
+	return outputs
 }
 
 func Terminate[T any](channel <-chan T) {
