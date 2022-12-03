@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 )
 
 type rucksack struct {
@@ -16,6 +17,8 @@ type rucksack struct {
 
 // Main function
 func main() {
+	start := time.Now().UnixMicro()
+
 	if len(os.Args) < 2 {
 		panic("Input paramater required")
 	}
@@ -24,7 +27,7 @@ func main() {
 	input := ReadInput(os.Args[1])
 
 	//Split
-	c0, c1, c2 := make(chan string), make(chan string), make(chan string)
+	c0, c1, c2 := make(chan string, 1024), make(chan string, 1024), make(chan string, 1024)
 	Split(input, c0, c1, c2)
 
 	//Count
@@ -48,7 +51,9 @@ func main() {
 		challange2 = Sum(priorities)
 	}
 
-	fmt.Printf("Rucksacks: %d\nChallange 1: %d\nChallange 2: %d", <-rucksackCount, <-challange1, <-challange2)
+	fmt.Printf("\t  Rucksacks: %d\n\tChallange 1: %d\n\tChallange 2: %d\n", <-rucksackCount, <-challange1, <-challange2)
+	end := time.Now().UnixMicro()
+	fmt.Printf(" Elapased time (us): %d\n", end-start)
 }
 
 func ReadInput(path string) <-chan string {
