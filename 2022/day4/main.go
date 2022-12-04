@@ -124,7 +124,7 @@ func FindPartialOverlaps(pairs <-chan [2]assignment) <-chan [2]assignment {
 
 	go func() {
 		for pair := range pairs {
-			//is A partially overlaps B, B much partially overlap A 🤯
+			//is A partially overlaps B, B must partially overlap A 🤯
 			if pair[0].PartiallyOverlaps(pair[1]) {
 				output <- pair
 			}
