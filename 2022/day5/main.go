@@ -2,6 +2,7 @@ package main
 
 // Importing packages
 import (
+	"aco/common"
 	"bufio"
 	"fmt"
 	"io"
@@ -22,30 +23,29 @@ type Instruction struct {
 
 // Main function
 func main() {
-	{
-		cargoInput, instructionsInput := ReadInput(os.Args[1])
-		instructions := ParseInstructions(instructionsInput)
-		cargo := ParseCargo(cargoInput)
-		for instruction := range instructions {
-			fmt.Println(CargoToString(cargo))
+	cargoInput, instructionsInput := ReadInput(os.Args[1])
+	instructions := common.Split(ParseInstructions(instructionsInput), 2)
+	cargo := ParseCargo(cargoInput)
+	m1, m2 := make(chan string), make(chan string)
+
+	go func() {
+		cargo := common.CopySlice(cargo)
+		for instruction := range instructions[0] {
 			cargo = ApplyInstructionSimple(cargo, instruction)
 		}
-		fmt.Println(CargoToString(cargo))
-		fmt.Println("Message1: ", ReadMessage(cargo))
-	}
+		m1 <- ReadMessage(cargo)
+	}()
 
-	{
-		cargoInput, instructionsInput := ReadInput(os.Args[1])
-		instructions := ParseInstructions(instructionsInput)
-		cargo := ParseCargo(cargoInput)
-		for instruction := range instructions {
-			fmt.Println(CargoToString(cargo))
+	go func() {
+		cargo := common.CopySlice(cargo)
+		for instruction := range instructions[1] {
 			cargo = ApplyInstruction9001(cargo, instruction)
 		}
-		fmt.Println(CargoToString(cargo))
-		fmt.Println("Message2: ", ReadMessage(cargo))
-	}
+		m2 <- ReadMessage(cargo)
+	}()
 
+	fmt.Println("Message2: ", <-m1)
+	fmt.Println("Message1: ", <-m2)
 }
 
 // Reads input file
@@ -126,7 +126,6 @@ func ParseCargo(manifest <-chan string) Cargo {
 		for i := len(stacks); i < len(items); i++ {
 			stacks = append(stacks, Stack{})
 		}
-
 		for i, item := range items {
 			if len(item) == 1 {
 				stacks[i] = append(stacks[i], Crate(item[0]))
@@ -247,39 +246,7 @@ func Count[T any](channel <-chan T) <-chan int {
 	return output
 }
 
-func Split[T any](input <-chan T, count int) []chan T {
-	outputs := []chan T{}
-
-	for i := 0; i < count; i++ {
-		outputs = append(outputs, make(chan T))
-	}
-
-	go func() {
-		for item := range input {
-			for _, output := range outputs {
-				output <- item
-			}
-		}
-
-		for _, output := range outputs {
-			close(output)
-		}
-	}()
-
-	return outputs
-}
-
 func DivideStack(stack Stack, position int) (Stack, Stack) {
 	a, b := append(stack[:position]), append(stack[position:])
-	return Copy(a), Copy(b)
-}
-
-func Copy[T any](a []T) []T {
-	b := make([]T, len(a))
-
-	for i, v := range a {
-		b[i] = v
-	}
-
-	return b
+	return common.CopySlice(a), common.CopySlice(b)
 }
