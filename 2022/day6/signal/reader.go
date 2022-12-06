@@ -6,8 +6,6 @@ type Reader interface {
 	FindStart(<-chan byte) (int, error)
 }
 
-type MarkerNotFound struct{}
-
 type reader struct {
 	markerLength int
 }
