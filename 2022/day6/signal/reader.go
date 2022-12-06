@@ -19,18 +19,18 @@ func CreateReader(markerLength int) Reader {
 }
 
 func (b reader) FindStart(input <-chan byte) (int, error) {
-	candidate := make([]byte, 0, b.markerLength)
+	marker := make([]byte, 0, b.markerLength)
 	position := 0
 
 	for i := range input {
 		position++
-		candidate = append(candidate, i)
+		marker = append(marker, i)
 
-		if len(candidate) == b.markerLength {
-			if areUnique(candidate) {
+		if len(marker) == b.markerLength {
+			if isUnique(marker) {
 				return position, nil
 			} else {
-				candidate = candidate[1:]
+				marker = marker[1:]
 			}
 		}
 	}
@@ -38,7 +38,7 @@ func (b reader) FindStart(input <-chan byte) (int, error) {
 	return -1, errors.New("Marker not found")
 }
 
-func areUnique(a []byte) bool {
+func isUnique(a []byte) bool {
 	for i, b := range a {
 		if contains(a[i+1:], b) {
 			return false
