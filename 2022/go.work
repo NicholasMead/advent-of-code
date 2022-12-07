@@ -4,4 +4,5 @@ use (
 	./common
 	./day5
 	./day6
+	./day7
 )
