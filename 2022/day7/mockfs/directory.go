@@ -11,6 +11,8 @@ type Directory interface {
 	GetSubDirectory(name string) (Directory, error)
 	GetSubDirectories() []Directory
 	GetSize() int
+
+	
 }
 
 type directory struct {
