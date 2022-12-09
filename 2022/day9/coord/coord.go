@@ -23,12 +23,8 @@ func (t Coord) StepTowards(h Coord) Coord {
 	dy := h.y - t.y
 
 	if abs(dx) >= 2 || abs(dy) >= 2 {
-		if dx != 0 {
-			t.x += dx / abs(dx)
-		}
-		if dy != 0 {
-			t.y += dy / abs(dy)
-		}
+		t.x += sign(dx)
+		t.y += sign(dy)
 	}
 
 	return t
@@ -55,4 +51,14 @@ func abs(v int) int {
 	//I'm a little upset with the math library for needing this statement.
 	//Integers need absolute values too!
 	return int(math.Abs(float64(v)))
+}
+
+func sign(v int) int {
+	if v > 0 {
+		return 1
+	} else if v < 0 {
+		return -1
+	} else {
+		return 0
+	}
 }
