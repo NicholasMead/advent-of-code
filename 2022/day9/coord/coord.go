@@ -19,10 +19,7 @@ const (
 )
 
 func (t Coord) StepTowards(h Coord) Coord {
-	dx := h.x - t.x
-	dy := h.y - t.y
-
-	if abs(dx) >= 2 || abs(dy) >= 2 {
+	if dx, dy := diff(t, h); abs(dx) >= 2 || abs(dy) >= 2 {
 		t.x += sign(dx)
 		t.y += sign(dy)
 	}
@@ -45,6 +42,10 @@ func (t Coord) StepDirection(dir Direction) Coord {
 	}
 
 	return t
+}
+
+func diff(a Coord, b Coord) (dx, dy int) {
+	return b.x - a.x, b.y - a.y
 }
 
 func abs(v int) int {
