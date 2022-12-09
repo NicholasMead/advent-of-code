@@ -21,22 +21,24 @@ func main() {
 
 func ParseRopeTail(input <-chan string, size int) <-chan int {
 	output := make(chan int, 1)
-	rope := rope.CreateRope(size)
-	visited := map[coord.Coord]struct{}{}
 
 	go func() {
+		defer close(output)
+
+		rope := rope.CreateRope(size)
+		visited := map[coord.Coord]int{}
+
 		for input := range input {
 			parsed := strings.Split(input, " ")
-			dir := rune(parsed[0][0])
+			dir := coord.Direction(parsed[0][0])
 			count, _ := strconv.Atoi(parsed[1])
 
 			for i := 0; i < count; i++ {
 				rope.MoveDirection(dir)
-				visited[rope.Tail()] = struct{}{}
+				visited[rope.Tail()]++
 			}
 		}
 		output <- len(visited)
-		close(output)
 	}()
 
 	return output

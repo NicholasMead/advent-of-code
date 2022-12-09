@@ -3,7 +3,7 @@ package rope
 import "oac/day9/coord"
 
 type Rope interface {
-	MoveDirection(rune)
+	MoveDirection(coord.Direction)
 	Head() coord.Coord
 	Tail() coord.Coord
 }
@@ -18,7 +18,7 @@ func (r *rope) Head() coord.Coord {
 }
 
 // MoveDirection implements Rope
-func (r *rope) MoveDirection(dir rune) {
+func (r *rope) MoveDirection(dir coord.Direction) {
 	r.segments[0] = r.segments[0].StepDirection(dir)
 
 	for i := 1; i < len(r.segments); i++ {
