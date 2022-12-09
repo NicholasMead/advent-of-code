@@ -28,17 +28,18 @@ func (t Coord) StepTowards(h Coord) Coord {
 }
 
 func (t Coord) StepDirection(dir Direction) Coord {
-	switch dir {
-	case Up:
-		t.y++
-	case Down:
-		t.y--
-	case Left:
-		t.x--
-	case Right:
-		t.x++
-	default:
+	move := map[Direction]Coord{
+		Up:    {0, 1},
+		Down:  {0, -1},
+		Left:  {-1, 0},
+		Right: {1, 0},
+	}
+
+	if m, found := move[dir]; !found {
 		panic(fmt.Sprintf("Unknown direction %c", dir))
+	} else {
+		t.x += m.x
+		t.y += m.y
 	}
 
 	return t

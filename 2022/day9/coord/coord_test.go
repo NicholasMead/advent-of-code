@@ -35,8 +35,33 @@ func TestCoord(t *testing.T) {
 		}
 
 		for _, c := range cases {
-			t.Run(fmt.Sprint(c), func(t *testing.T) {
+			name := fmt.Sprintf("(%d,%d)=>(%d,%d)", c.input.x, c.input.y, c.result.x, c.result.y)
+			t.Run(name, func(t *testing.T) {
 				if r := start.StepTowards(c.input); r != c.result {
+					t.Error("Expected", c.result, "got", r)
+				}
+			})
+		}
+	})
+
+	t.Run("StepDirection", func(t *testing.T) {
+		type testCase struct {
+			direction Direction
+			result    Coord
+		}
+
+		start := Coord{1, 1}
+		cases := []testCase{
+			{'U', Coord{1, 2}},
+			{'D', Coord{1, 0}},
+			{'L', Coord{0, 1}},
+			{'R', Coord{2, 1}},
+		}
+
+		for _, c := range cases {
+			name := fmt.Sprintf("%c=>(%d,%d)", c.direction, c.result.x, c.result.y)
+			t.Run(name, func(t *testing.T) {
+				if r := start.StepDirection(c.direction); r != c.result {
 					t.Error("Expected", c.result, "got", r)
 				}
 			})
