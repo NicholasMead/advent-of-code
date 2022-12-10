@@ -12,14 +12,13 @@ type Buffer[T any] interface {
 
 type memBuffer[T any] struct {
 	internalClock
-	log []T
-	in  <-chan T
-	req chan action
+	log  []T
+	in   <-chan T
+	read chan readAction[T]
 }
 
-type action struct {
-	enact func()
-	done  chan<- interface{}
+type readAction[T any] struct {
+	done chan<- []T
 }
 
 func (l *memBuffer[T]) Run(clk <-chan time.Time) (stop func(), err error) {
@@ -32,15 +31,13 @@ func (l *memBuffer[T]) Run(clk <-chan time.Time) (stop func(), err error) {
 			select {
 			case _, open := <-l.clk:
 				if open {
-					i := <-l.in
-					l.log = append(l.log, i)
+					l.tick()
 				} else {
 					l.clk = nil
 				}
-			case req := <-l.req:
-				req.enact()
-				req.done <- new(interface{})
-				close(req.done)
+			case read := <-l.read:
+				read.done <- append([]T{}, l.log...)
+				close(read.done)
 			}
 		}
 	}()
@@ -48,23 +45,22 @@ func (l *memBuffer[T]) Run(clk <-chan time.Time) (stop func(), err error) {
 	return l.stopClock, nil
 }
 
+func (l *memBuffer[T]) tick() {
+	i := <-l.in
+	l.log = append(l.log, i)
+}
+
 func (l *memBuffer[T]) Peak() []T {
-	output := make([]T, len(l.log))
-	done := make(chan interface{})
-	act := func() {
-		copy(output, l.log)
-	}
+	done := make(chan []T)
 
-	l.req <- action{act, done}
-	<-done
-
-	return output
+	l.read <- readAction[T]{done}
+	return <-done
 }
 
 func MemBuffer[T any](in <-chan T) Buffer[T] {
 	return &memBuffer[T]{
-		log: []T{},
-		in:  in,
-		req: make(chan action),
+		log:  []T{},
+		in:   in,
+		read: make(chan readAction[T]),
 	}
 }
