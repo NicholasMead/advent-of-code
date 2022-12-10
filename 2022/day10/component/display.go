@@ -25,6 +25,7 @@ func (d *display) Run(clk <-chan time.Time) (stop func(), err error) {
 		d.nextPos()
 		if d.pos == 0 {
 			d.out <- d.draw()
+			d.rows = make([]pixel.Row, d.lines)
 		}
 	}
 
