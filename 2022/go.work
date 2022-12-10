@@ -3,9 +3,9 @@ go 1.19
 use (
 	./common
 	./day10
-	./day5
-	./day6
-	./day7
-	./day8
-	./day9
+	./day05
+	./day06
+	./day07
+	./day08
+	./day09
 )
