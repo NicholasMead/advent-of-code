@@ -57,6 +57,7 @@ func main() {
 	for firstDraw == "" {
 		select {
 		case firstDraw = <-disp_out:
+			vPrintln(verbose, "Execution Complete")
 		default:
 			ticks++
 			vPrintln(verbose, "tick", ticks, reg)
