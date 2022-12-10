@@ -22,6 +22,20 @@ func (c *internalClock) stopClock() {
 	c.clk = nil
 }
 
+func (c *internalClock) onTick(clk <-chan time.Time, action func(time.Time)) (stop func(), err error) {
+	if err := c.startClock(clk); err != nil {
+		return nil, err
+	}
+
+	go func() {
+		for t := range c.clk {
+			action(t)
+		}
+	}()
+
+	return c.stopClock, nil
+}
+
 func Ticker() (clk <-chan time.Time, tick func()) {
 	clock := make(chan time.Time)
 	tick = func() {

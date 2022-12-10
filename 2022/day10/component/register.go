@@ -30,30 +30,23 @@ func (r *linearRegister) String() string {
 }
 
 func (r *linearRegister) Run(clk <-chan time.Time) (stop func(), err error) {
-	if err := r.startClock(clk); err != nil {
-		return nil, err
+	busy := 0
+	cmd := Command{noop, 0}
+	action := func(_ time.Time) {
+		r.output <- r.value
+
+		if busy == 0 {
+			cmd, busy = r.readCmd()
+		} else {
+			busy--
+		}
+
+		if busy == 0 {
+			r.execCmd(cmd)
+		}
 	}
 
-	go func() {
-		busy := 0
-		cmd := Command{noop, 0}
-
-		for range r.clk {
-			r.output <- r.value
-
-			if busy == 0 {
-				cmd, busy = r.readCmd()
-			} else {
-				busy--
-			}
-
-			if busy == 0 {
-				r.execCmd(cmd)
-			}
-		}
-	}()
-
-	return r.stopClock, nil
+	return r.onTick(clk, action)
 }
 
 func (r *linearRegister) readCmd() (Command, int) {

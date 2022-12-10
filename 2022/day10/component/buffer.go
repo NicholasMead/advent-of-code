@@ -15,18 +15,12 @@ type memBuffer[T any] struct {
 }
 
 func (l *memBuffer[T]) Run(clk <-chan time.Time) (stop func(), err error) {
-	if err := l.startClock(clk); err != nil {
-		return nil, err
+	action := func(_ time.Time) {
+		i := <-l.in
+		l.log = append(l.log, i)
 	}
 
-	go func() {
-		for range l.clk {
-			i := <-l.in
-			l.log = append(l.log, i)
-		}
-	}()
-
-	return l.stopClock, nil
+	return l.onTick(clk, action)
 }
 
 func (l *memBuffer[T]) Peak() []T {

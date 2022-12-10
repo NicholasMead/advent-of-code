@@ -16,25 +16,19 @@ type display struct {
 }
 
 func (d *display) Run(clk <-chan time.Time) (stop func(), err error) {
-	if err := d.startClock(clk); err != nil {
-		return nil, err
+	action := func(_ time.Time) {
+		in := <-d.inReg
+
+		row := d.rows[d.rowNum()]
+		d.rows[d.rowNum()] = row | pixel.Sprite(in).Focus(d.rowPos())
+
+		d.nextPos()
+		if d.pos == 0 {
+			d.out <- d.draw()
+		}
 	}
 
-	go func() {
-		for range d.clk {
-			in := <-d.inReg
-
-			row := d.rows[d.rowNum()]
-			d.rows[d.rowNum()] = row | pixel.Sprite(in).Focus(d.rowPos())
-
-			d.nextPos()
-			if d.pos == 0 {
-				d.out <- d.draw()
-			}
-		}
-	}()
-
-	return d.stopClock, nil
+	return d.onTick(clk, action)
 }
 
 func Display(width, lines int, inReg <-chan int, out chan<- string) Component {
