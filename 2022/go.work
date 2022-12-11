@@ -2,10 +2,11 @@ go 1.19
 
 use (
 	./common
-	./day10
 	./day05
 	./day06
 	./day07
 	./day08
 	./day09
+	./day10
+	./day11
 )
