@@ -2,13 +2,13 @@ package common
 
 import (
 	"bufio"
+	"io/fs"
 	"os"
 	"strings"
 )
 
-func ReadInput(path string) <-chan string {
+func ReadInputPath(path string) <-chan string {
 	var stream *os.File
-
 	switch path {
 	case "":
 		panic("No input path")
@@ -23,6 +23,15 @@ func ReadInput(path string) <-chan string {
 	}
 
 	reader := bufio.NewReader(stream)
+	return ReadInputBuffer(reader)
+}
+
+func ReadInputEmbed(file fs.File) <-chan string {
+	reader := bufio.NewReader(file)
+	return ReadInputBuffer(reader)
+}
+
+func ReadInputBuffer(reader *bufio.Reader) <-chan string {
 	output := make(chan string)
 	go func() {
 		for {

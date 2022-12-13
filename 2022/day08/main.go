@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	input := common.ReadInput(os.Args[1])
+	input := common.ReadInputPath(os.Args[1])
 	verbose := len(os.Args) > 2 && os.Args[2] == "-v"
 	trees := [][]int{}
 

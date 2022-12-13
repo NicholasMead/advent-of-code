@@ -2,8 +2,8 @@ package main
 
 import (
 	"aco/common"
-	"aoc/day12/astar"
 	"aoc/day12/grid"
+	"aoc/day12/search"
 	"flag"
 	"fmt"
 )
@@ -12,7 +12,7 @@ func main() {
 	file := flag.String("f", "-", "Input file")
 	flag.Parse()
 
-	input := common.ReadInput(*file)
+	input := common.ReadInputPath(*file)
 	lines := []string{}
 	for i := range input {
 		lines = append(lines, i)
@@ -40,7 +40,8 @@ func main() {
 	fmt.Println("Start:", start)
 	fmt.Println("End:", end)
 
-	route, err := astar.FindRoute(start, end)
+	astar := search.CreateAStar[grid.Node]()
+	route, _, err := astar.FindRoute(start, end)
 	if err != nil {
 		panic(err)
 	} else {
@@ -53,7 +54,7 @@ func main() {
 	fmt.Println(len(starts)+1, "starting points")
 	best := len(route) - 1
 	for _, start = range starts {
-		route, err = astar.FindRoute(start, end)
+		route, _, err = astar.FindRoute(start, end)
 		if err == nil && len(route)-1 < best {
 			best = len(route) - 1
 		}

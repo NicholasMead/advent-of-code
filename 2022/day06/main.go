@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	rawInput := <-common.ReadInput(os.Args[1])
+	rawInput := <-common.ReadInputPath(os.Args[1])
 	input := make(chan byte)
 	go func(raw string) {
 		for _, r := range raw {

@@ -30,7 +30,7 @@ func main() {
 	flag.Parse()
 
 	//channels (wires)
-	file_parse := common.ReadInput(*file)
+	file_parse := common.ReadInputPath(*file)
 	parse_reg := parseInput(file_parse)
 	reg_split := make(chan int, 1)
 	split := common.Split(reg_split, 2)

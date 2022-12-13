@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	input := common.ReadInput(os.Args[1])
+	input := common.ReadInputPath(os.Args[1])
 	fs := ParseFileSystem(input)
 
 	fmt.Println("part 1:", part1(fs))

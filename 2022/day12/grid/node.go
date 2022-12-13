@@ -28,6 +28,10 @@ func (this Node) GetNeighbours() []Node {
 	return neighbours
 }
 
+func (this Node) GetNeighbourDist(n Node) int {
+	return this.GetHuristic(n)
+}
+
 func (from Node) GetHuristic(to Node) int {
 	return abs(from.x-to.x) + abs(from.y-to.y)
 }
@@ -38,6 +42,10 @@ func diff(a, b Node) int {
 
 func abs(x int) int {
 	return int(math.Abs(float64(x)))
+}
+
+func (n Node) Hash() uint64 {
+	return (uint64(n.x) << 32) | uint64(n.y)
 }
 
 func (n Node) String() string {

@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	input := common.Split(common.ReadInput(os.Args[1]), 2)
+	input := common.Split(common.ReadInputPath(os.Args[1]), 2)
 
 	p1, p2 := ParseRopeTail(input[0], 2), ParseRopeTail(input[1], 10)
 

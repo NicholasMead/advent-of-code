@@ -66,7 +66,7 @@ func main() {
 
 	//part 1
 	{
-		input := common.ReadInput(*filePath)
+		input := common.ReadInputPath(*filePath)
 		monkeys := parseMonkeys(input)
 		scores := GetScores(20, 3, monkeys)
 		slices.Sort(scores)
@@ -75,7 +75,7 @@ func main() {
 
 	//part 2
 	{
-		input := common.ReadInput(*filePath)
+		input := common.ReadInputPath(*filePath)
 		monkeys := parseMonkeys(input)
 		scores := GetScores(10000, 1, monkeys)
 		slices.Sort(scores)
