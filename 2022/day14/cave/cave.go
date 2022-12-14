@@ -142,8 +142,11 @@ func (c cave) String() string {
 		for x := xMin; x <= xMax; x++ {
 			if y == yMax {
 				row += "#"
+			} else if x == 500 && y == 0 {
+				row += "+"
 			} else {
-				row += string(c.At(coord.Coord{x, y}))
+				mat := c.At(coord.Coord{x, y})
+				row += string(mat)
 			}
 		}
 		gridRows = append(gridRows, row)
