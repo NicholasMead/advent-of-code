@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strconv"
 	"sync"
+	"time"
 )
 
 type Target co.Coord
@@ -15,6 +16,7 @@ type Beacon co.Coord
 type ScanMap map[Sensor]Beacon
 
 func main() {
+	start := time.Now()
 	flags := common.GetFlags()
 
 	rowNum, _ := strconv.Atoi(flags.Args[0])
@@ -92,7 +94,10 @@ func main() {
 	for found := range answer {
 		freq := found.X*4000000 + found.Y
 		fmt.Printf("part2: (%v,%v) => %v\n", found.X, found.Y, freq)
+		break
 	}
+	end := time.Now()
+	fmt.Printf("Execution time: %vms\n", end.UnixMilli()-start.UnixMilli())
 }
 
 func countEmptyInRow(scans ScanMap, rowNum int) int {

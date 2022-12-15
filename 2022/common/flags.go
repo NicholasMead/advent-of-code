@@ -12,7 +12,7 @@ var cache *Flags
 
 func GetFlags() Flags {
 	if cache == nil {
-		cache := &Flags{}
+		cache = &Flags{}
 		cache.File = flag.String("f", "-", "input file")
 		cache.Verbose = flag.Bool("v", false, "verbose")
 
