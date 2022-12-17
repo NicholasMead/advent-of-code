@@ -1,0 +1,18 @@
+
+== Minute 2 ==
+You open valve DD. => 20 * 28 = 560
+
+== Minute 5 ==
+You open valve BB. => 560 + 13 * 25 = 1035
+
+== Minute 9 ==
+You open valve JJ. => 1035 + 21 * 21 = 1476
+
+== Minute 17 ==
+You open valve HH.
+
+== Minute 21 ==
+You open valve EE.
+
+== Minute 24 ==
+You open valve CC.
