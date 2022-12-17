@@ -54,8 +54,6 @@ func (t *tower) reduce() {
 
 // Reduce implements Tower
 func (t *tower) topCompletedRow() int {
-	// top := math.MaxInt
-
 	for y := t.Size(); y >= t.base; y-- {
 		if t.rowCompleted(y) {
 			return y
@@ -65,7 +63,7 @@ func (t *tower) topCompletedRow() int {
 }
 
 func (t *tower) rowCompleted(yIndex int) bool {
-	scan := 3
+	scan := 2
 
 	for x := 0; x < t.width; x++ {
 		found := false

@@ -7,9 +7,11 @@ import (
 	sim "aoc/day17/simulation"
 	tow "aoc/day17/towers"
 	"fmt"
+	"time"
 )
 
 func main() {
+	start := time.Now()
 	parts := map[string]uint64{
 		"part1": 2022,
 		"part2": 1_000_000_000_000,
@@ -25,6 +27,8 @@ func main() {
 		answer := sim.Run(size)
 		fmt.Printf("%v: %v\n", part, answer)
 	}
+	end := time.Now()
+	fmt.Printf("Elapsed %vms\n", end.UnixMilli()-start.UnixMilli())
 }
 
 func parseJets() []int {
