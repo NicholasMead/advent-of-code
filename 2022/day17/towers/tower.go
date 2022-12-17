@@ -8,9 +8,7 @@ import (
 
 type Tower interface {
 	Drop(p shapes.Patten, j cycle.Cycle[int])
-	AsPatten() shapes.Patten
-	Copy() Tower
-
+	Signature() shapes.Patten
 	Size() int
 }
 
@@ -25,16 +23,6 @@ type tower struct {
 	width, height int
 	base          int
 	fixed         map[shapes.Coord]interface{}
-}
-
-// Copy implements Tower
-func (t tower) Copy() Tower {
-	fixed := map[shapes.Coord]interface{}{}
-	for f, i := range t.fixed {
-		fixed[f] = i
-	}
-	t.fixed = fixed
-	return &t
 }
 
 // Reduce implements Tower
@@ -82,7 +70,7 @@ func (t *tower) rowCompleted(yIndex int) bool {
 }
 
 // AsPatten implements Tower
-func (t *tower) AsPatten() shapes.Patten {
+func (t *tower) Signature() shapes.Patten {
 	p := shapes.Patten{}
 	for r := range t.fixed {
 		r.Y -= t.base

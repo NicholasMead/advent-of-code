@@ -25,6 +25,7 @@ func main() {
 		}
 
 		answer := sim.Run(size)
+		fmt.Println(sim.Tower)
 		fmt.Printf("%v: %v\n", part, answer)
 	}
 	end := time.Now()

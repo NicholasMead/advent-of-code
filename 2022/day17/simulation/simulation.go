@@ -19,44 +19,41 @@ func (s *Simulation) Run(length uint64) uint64 {
 
 	var skippedSize uint64 = 0
 	var count uint64 = 0
-	// cycle := uint64(s.CycleLength()) <- Why did I think this was a good idea... check every 1 full itteration cycle?
-	cycle := uint64(1)
 	store := []struct {
-		patten           shapes.Patten
+		signature        shapes.Patten
 		size             int
 		shapePos, jetPos int
 	}{
 		{
-			s.Tower.AsPatten(),
+			s.Tower.Signature(),
 			s.Tower.Size(),
 			s.Shapes.Pos(),
 			s.Jets.Pos(),
 		},
 	}
 
-	for count+cycle < length {
-		s.run(cycle)
-		count += cycle
-		cNum := count / cycle
+	for count+1 < length {
+		s.run(1)
+		count++
 
-		patten := s.Tower.AsPatten()
+		signature := s.Tower.Signature()
 		match := false
 		for prevNum, prev := range store {
 			match = prev.shapePos == s.Shapes.Pos() &&
 				prev.jetPos == s.Jets.Pos() &&
-				patten.Match(prev.patten)
+				signature.Match(prev.signature)
 
 			if match {
 				// Super maths time!
-				pattenLength := (cNum - uint64(prevNum)) * cycle
-				pattenSize := s.Tower.Size() - prev.size
+				pattenLength := count - uint64(prevNum)  //number of cycles between matches
+				pattenSize := s.Tower.Size() - prev.size //high diff between matches
 
-				remainder := length - count
-				skippedCycles := remainder / pattenLength
-				skippedRemainder := remainder % pattenLength
-				skippedSize = uint64(pattenSize) * skippedCycles
+				remainder := length - count                      //how many cycles are left
+				skippedCycles := remainder / pattenLength        //how may pattens we can skip
+				skippedRemainder := remainder % pattenLength     //how many cycles will be left after skip
+				skippedSize = uint64(pattenSize) * skippedCycles //how much hight we skipped up
 
-				count = length - skippedRemainder
+				count = length - skippedRemainder //skip forward in time
 				break
 			}
 		}
@@ -65,11 +62,11 @@ func (s *Simulation) Run(length uint64) uint64 {
 			break
 		} else {
 			store = append(store, struct {
-				patten           shapes.Patten
+				signature        shapes.Patten
 				size             int
 				shapePos, jetPos int
 			}{
-				s.Tower.AsPatten(),
+				s.Tower.Signature(),
 				s.Tower.Size(),
 				s.Shapes.Pos(),
 				s.Jets.Pos(),

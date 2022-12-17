@@ -1,7 +1,5 @@
 package shapes
 
-import "math"
-
 type Patten []Coord
 
 var (
@@ -39,17 +37,6 @@ var (
 	}
 )
 
-func (p Patten) AboveY(y int) Patten {
-	above := Patten{}
-	for _, s := range p {
-		if s.Y >= y {
-			s.Y -= y
-			above = append(above, s)
-		}
-	}
-	return above
-}
-
 func (p Patten) Match(m Patten) bool {
 	if len(p) != len(m) {
 		return false
@@ -69,28 +56,4 @@ func (p Patten) Match(m Patten) bool {
 	}
 
 	return true
-}
-
-// GetBounds implements Shape
-func (p Patten) GetBounds() (left int, right int, top int, bottom int) {
-	left = math.MaxInt
-	right = -math.MaxInt
-	bottom = math.MaxInt
-	top = -math.MaxInt
-
-	for _, s := range p {
-		if s.X > right {
-			right = s.X
-		}
-		if s.X < left {
-			left = s.X
-		}
-		if s.Y > top {
-			top = s.Y
-		}
-		if s.Y < bottom {
-			bottom = s.Y
-		}
-	}
-	return left, right, top, bottom
 }
