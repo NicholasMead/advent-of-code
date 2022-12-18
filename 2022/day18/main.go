@@ -11,8 +11,9 @@ import (
 func main() {
 	cubes := getInputCubes()
 	droplet := lava.FormDroplet(cubes)
-	fmt.Println("Part1:", droplet.TotalSurfaceArea())
-	fmt.Println("Part2:", droplet.ExternalSurfaceArea())
+	tot, ext := droplet.SurfaceArea()
+	fmt.Println("Part1:", tot)
+	fmt.Println("Part2:", ext)
 }
 
 func getInputCubes() []lava.Cube {

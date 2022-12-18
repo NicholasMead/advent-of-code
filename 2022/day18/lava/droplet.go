@@ -6,8 +6,8 @@ import (
 
 type Droplet interface {
 	Add(cube Cube)
-	TotalSurfaceArea() int
-	ExternalSurfaceArea() int
+	// TotalSurfaceArea() int
+	SurfaceArea() (total int, external int)
 }
 
 func FormDroplet(cubes []Cube) Droplet {
@@ -44,41 +44,47 @@ func (droplet *droplet) Add(cube Cube) {
 	droplet.maxY = max(droplet.maxY, cube.Y)
 	droplet.maxZ = max(droplet.maxZ, cube.Z)
 
-	for _, adj := range cube.getAdjacent() {
-		_, found := droplet.cubes[adj]
-		if found {
-			droplet.cubes[adj]--
-			droplet.cubes[cube]--
-		}
-	}
+	// from part 1
+	// for _, adj := range cube.getAdjacent() {
+	// 	_, found := droplet.cubes[adj]
+	// 	if found {
+	// 		droplet.cubes[adj]--
+	// 		droplet.cubes[cube]--
+	// 	}
+	// }
 }
 
-func (d droplet) TotalSurfaceArea() int {
-	surfaceArea := 0
-	for _, area := range d.cubes {
-		surfaceArea += area
-	}
-	return surfaceArea
-}
+// From Part 1
+// func (d droplet) TotalSurfaceArea() int {
+// 	surfaceArea := 0
+// 	for _, area := range d.cubes {
+// 		surfaceArea += area
+// 	}
+// 	return surfaceArea
+// }
 
-func (d droplet) ExternalSurfaceArea() int {
-	ext := map[Cube]bool{}
-	surfaceArea := 0
+func (d droplet) SurfaceArea() (total int, external int) {
+	ext := map[Cube]bool{} //cache calculations
+
 	for cube := range d.cubes {
 		for _, adj := range cube.getAdjacent() {
 			if _, found := d.cubes[adj]; !found {
+				total++
 				if ext[adj] {
-					surfaceArea++
+					external++
 				} else if d.isExtenal(adj) {
 					ext[adj] = true // no need to check here again!
-					surfaceArea++
+					external++
 				}
 			}
 		}
 	}
-	return surfaceArea
+	return total, external
 }
 
+// Checks if a cube space is outside the droplet
+// Start outside the droplet, BFS though adjecent (unvisited cubes) until the target is found
+// Only accounds for cubes at most 1 away from the droplet, but its also an internal function so bite me (or write the extra boundry condition yourself, I dont mind, I was too busy writing this comment)
 func (d droplet) isExtenal(cube Cube) bool {
 	start := Cube{
 		X: d.minX - 1,
