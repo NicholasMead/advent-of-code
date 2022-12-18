@@ -64,16 +64,12 @@ func (droplet *droplet) Add(cube Cube) {
 // }
 
 func (d droplet) SurfaceArea() (total int, external int) {
-	ext := map[Cube]bool{} //cache calculations
-
+	ext := d.allExtenal()
 	for cube := range d.cubes {
 		for _, adj := range cube.getAdjacent() {
 			if _, found := d.cubes[adj]; !found {
 				total++
 				if ext[adj] {
-					external++
-				} else if d.isExtenal(adj) {
-					ext[adj] = true // no need to check here again!
 					external++
 				}
 			}
@@ -85,7 +81,7 @@ func (d droplet) SurfaceArea() (total int, external int) {
 // Checks if a cube space is outside the droplet
 // Start outside the droplet, BFS though adjecent (unvisited cubes) until the target is found
 // Only accounds for cubes at most 1 away from the droplet, but its also an internal function so bite me (or write the extra boundry condition yourself, I dont mind, I was too busy writing this comment)
-func (d droplet) isExtenal(cube Cube) bool {
+func (d droplet) allExtenal() map[Cube]bool {
 	start := Cube{
 		X: d.minX - 1,
 		Y: d.minY - 1,
@@ -98,10 +94,6 @@ func (d droplet) isExtenal(cube Cube) bool {
 	for len(queue) > 0 {
 		current, queue = queue[0], queue[1:] //pop!
 		for _, next := range current.getAdjacent() {
-			if next == cube {
-				return true
-			}
-
 			tooFar := next.X > d.maxX+2 ||
 				next.Y > d.maxY+2 ||
 				next.Z > d.maxZ+2 ||
@@ -123,7 +115,7 @@ func (d droplet) isExtenal(cube Cube) bool {
 			queue = append(queue, next)
 		}
 	}
-	return false
+	return visited
 }
 
 func min(a, b int) int {
