@@ -6,14 +6,20 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func main() {
+	start := time.Now()
+
 	cubes := getInputCubes()
 	droplet := lava.FormDroplet(cubes)
 	tot, ext := droplet.SurfaceArea()
 	fmt.Println("Part1:", tot)
 	fmt.Println("Part2:", ext)
+
+	end := time.Now()
+	fmt.Println("Elamsde (ms):", end.UnixMilli()-start.UnixMilli())
 }
 
 func getInputCubes() []lava.Cube {

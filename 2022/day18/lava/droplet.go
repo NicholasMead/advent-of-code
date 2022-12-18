@@ -79,7 +79,7 @@ func (d droplet) SurfaceArea() (total int, external int) {
 }
 
 // Checks if a cube space is outside the droplet
-// Start outside the droplet, BFS though adjecent (unvisited cubes) until the target is found
+// Start outside the droplet, BFS though adjecent (unvisited cubes) until all are found
 // Only accounds for cubes at most 1 away from the droplet, but its also an internal function so bite me (or write the extra boundry condition yourself, I dont mind, I was too busy writing this comment)
 func (d droplet) allExtenal() map[Cube]bool {
 	start := Cube{
