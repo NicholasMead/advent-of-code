@@ -3,8 +3,8 @@
 @REM @REM echo Input is: %input%
 
 mkdir day%1
+xcopy _template\main.go day%1
 cd day%1
 go mod init aoc/day%1
 cd ..
 go work use day%1
-cd day%1
