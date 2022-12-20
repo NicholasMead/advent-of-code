@@ -45,7 +45,7 @@ func mixFrame(frame []int, count int) int {
 
 	for i := 0; i < length*count; i++ {
 		target := &frame[i%length]
-		current = moveInFrame(current, target, *target)
+		current = mixInFrame(current, target)
 	}
 
 	zeroIndex := slices.Index(current, zero)
@@ -56,17 +56,17 @@ func mixFrame(frame []int, count int) int {
 	return value
 }
 
-func moveInFrame(frame []*int, target *int, pos int) []*int {
+func mixInFrame(frame []*int, target *int) []*int {
 	startPos := slices.Index(frame, target)
 
-	len := len(frame)
-	moves := *target % (len - 1)
+	len := len(frame) - 1 //Cant swap with self!
+	moves := *target % len
 	endPos := startPos + moves
 
 	if endPos <= 0 {
-		endPos += (len - 1)
-	} else if endPos >= len-1 {
-		endPos = endPos % (len - 1)
+		endPos += len
+	} else {
+		endPos = endPos % len
 	}
 
 	next := slices.Delete(frame, startPos, startPos+1)
