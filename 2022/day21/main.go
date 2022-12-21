@@ -23,7 +23,7 @@ func parseJob(job string) (left, right, opp string) {
 	return parts[0], parts[2], parts[1]
 }
 
-func (j Jobs) GetValue(monkey string) (int, bool) {
+func (j Jobs) GetValue(monkey string) (val int, found bool) {
 	job, found := j[monkey]
 	if !found {
 		return 0, false
@@ -33,11 +33,11 @@ func (j Jobs) GetValue(monkey string) (int, bool) {
 	}
 
 	leftMon, rightMon, opp := parseJob(job)
-	left, leftErr := j.GetValue(leftMon)
-	right, rightErr := j.GetValue(rightMon)
+	left, lFound := j.GetValue(leftMon)
+	right, rFound := j.GetValue(rightMon)
 
-	if leftErr || rightErr {
-		return 0, true
+	if !(lFound && rFound) {
+		return 0, false
 	}
 
 	switch opp {
@@ -61,16 +61,16 @@ func (jobs Jobs) GetHumn(monkey string, target int) int {
 	}
 
 	lMonkey, rMonkey, opp := parseJob(job)
-	lVal, lErros := jobs.GetValue(lMonkey)
-	rVal, rErros := jobs.GetValue(rMonkey)
+	lVal, lFound := jobs.GetValue(lMonkey)
+	rVal, rFound := jobs.GetValue(rMonkey)
 
 	var missingMon string
 	var knownVal int
 
-	if lErros {
+	if !lFound {
 		missingMon = lMonkey
 		knownVal = rVal
-	} else if rErros {
+	} else if !rFound {
 		missingMon = rMonkey
 		knownVal = lVal
 	} else {
@@ -120,13 +120,13 @@ func part2(jobs Jobs) int {
 	delete(jobs, "humn")
 
 	lMonkey, rMonkey, _ := parseJob(root)
-	lVal, lErros := jobs.GetValue(lMonkey)
-	rVal, rErros := jobs.GetValue(rMonkey)
+	lVal, lFound := jobs.GetValue(lMonkey)
+	rVal, rFound := jobs.GetValue(rMonkey)
 
-	if lErros {
+	if !lFound {
 		return jobs.GetHumn(lMonkey, rVal)
 	}
-	if rErros {
+	if !rFound {
 		return jobs.GetHumn(rMonkey, lVal)
 	}
 	panic("puzzel broken...")
