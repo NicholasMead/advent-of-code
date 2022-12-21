@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	commom.TimedMs(func() {
+	common.TimedMs(func() {
 		parseInput()
 
 		p1, p2 := part1(), part2()
