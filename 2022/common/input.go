@@ -26,6 +26,32 @@ func ReadInputPath(path string) <-chan string {
 	return ReadInputBuffer(reader)
 }
 
+func ReadFullInputPath(path string) []string {
+	var stream *os.File
+	switch path {
+	case "":
+		panic("No input path")
+	case "-":
+		stream = os.Stdin
+	default:
+		file, err := os.Open(path)
+		if err != nil {
+			panic(err)
+		}
+		stream = file
+	}
+
+	reader := bufio.NewScanner(stream)
+	input := []string{}
+
+	for reader.Scan() {
+		line := reader.Text()
+		input = append(input, line)
+	}
+
+	return input
+}
+
 func ReadInputEmbed(file fs.File) <-chan string {
 	reader := bufio.NewReader(file)
 	return ReadInputBuffer(reader)
